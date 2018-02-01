@@ -1,6 +1,8 @@
-/******************
- * MyEchoServer   *
- ******************/
+/**
+ * Jerred Shepherd
+ * 1-31-18
+ * myEcho client for Networking
+ */
 #include <iostream>
 #include <winsock2.h>
 #include "connectsock.cpp"
