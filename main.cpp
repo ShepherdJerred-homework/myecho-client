@@ -1,16 +1,22 @@
+/******************
+ * MyEchoServer   *
+ ******************/
 #include <iostream>
-#include "connectsock.cpp";
+#include <winsock2.h>
+#include "connectsock.cpp"
+using namespace std;
+#pragma comment (lib, "ws2_32.lib")
 
-using std::cout;
-using std::cin;
-using std::endl;
+#define MAXBUF  4096
+#define MAXNAME 80
 
-SOCKET
+// Utility socket function
+SOCKET passivesock (char*,char*);
 
 int main() {
 
     WORD wVersion = 0x0202;
-    WSA wsaData;
+    WSADATA wsaData;
     int iResult = WSAStartup(wVersion, &wsaData);
     if (iResult != 0) {
         cout << "Unable to initialize Windows Socket library." << endl;
@@ -24,8 +30,7 @@ int main() {
     cout << "Which service name or port number? ";
     cin >> service;
 
-
-    SOCKET s = connectsock("si", "echo", "tcp");
+    SOCKET s = connectsock(host, service, "tcp");
     if (s != INVALID_SOCKET) {
         cout << "TCP connection established!" << endl << endl;
 
@@ -44,13 +49,15 @@ int main() {
             return 0;
         }
 
-        char recievedBuffer[MAXBUF];
-        int numberOfBytesReceived = recv(s, recievedBuffer, MAXBUF - 1, 0);
+        char receivedBuffer[MAXBUF];
+        int numberOfBytesReceived = recv(s, receivedBuffer, MAXBUF - 1, 0);
         if (numberOfBytesReceived > 0) {
             cout << "Received Message: ";
-            recievedBuffer[numberOfBytesReceived] = '\0';
-            cout << recievedBuffer << endl;
+            receivedBuffer[numberOfBytesReceived] = '\0';
+            cout << receivedBuffer << endl;
             cout << "Number of bytes received: " << numberOfBytesReceived << endl << endl;
+        } else {
+            cout << "Nothing received" << endl << endl;
         }
         closesocket(s);
     }
